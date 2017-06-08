@@ -9,6 +9,7 @@ ONE_DAY = timedelta(days=1)
 INITIAL_DATA_FILE = 'data/raw_inmate_data/2016-07-24.csv'
 URL_TEMPLATE = 'http://www2.cookcountysheriff.org/search2/details.asp?jailnumber={0}'
 
+
 class InmatesSpider(scrapy.Spider):
     name = "inmates"
 
@@ -25,9 +26,7 @@ class InmatesSpider(scrapy.Spider):
             os.makedirs(self._data_dir)
 
     def _get_scraped_data(self):
-        """
-        Get data from last scrape
-        """
+        """Get data from last scrape"""
         yesterdays_file = 'data/raw_inmate_data/{0}.csv'.format(self._yesterday.strftime('%Y-%m-%d'))
 
         if not os.path.exists(yesterdays_file):
