@@ -1,3 +1,10 @@
+### Project-specific excludes ###
+
+data/
+
+
+### Standard Python stuff ###
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
