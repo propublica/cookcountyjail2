@@ -4,7 +4,7 @@ Descended in spirit from the Supreme Chi-Town Coding Crew scraper/API that ran f
 
 ## Installing
 
-Create a Python virtualenv, then:
+Create a Python virtual environment, then:
 
 ```
 pip install -r requirements.txt
@@ -12,10 +12,29 @@ pip install -r requirements.txt
 
 ## Setting up environment
 
-TKTK
+Get configuration variables:
+
+```
+source env.sh
+```
+
+More TK
 
 ## Running the scraper
 
 ```
 scrapy crawl inmates
 ```
+
+## S3 filesystem structure
+
+```
+- </dev/prod>
+  - /daily
+    - <YYYY-MM-DD>.csv
+    - ...
+  - /raw
+    - <YYYY-MM-DD>-<BOOKING_ID>.html
+```
+
+
