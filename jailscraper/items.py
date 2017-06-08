@@ -2,10 +2,13 @@
 import dateparser
 import scrapy
 
+
 def strip(x):
+    """Simple stripping for lists and strings."""
     if isinstance(x, list):
         x = ''.join(x)
     return x.strip()
+
 
 class InmateRecordItem(scrapy.Item):
     Booking_Id = scrapy.Field()
