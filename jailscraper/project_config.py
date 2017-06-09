@@ -29,4 +29,6 @@ def get_secrets():
 
 
 SECRETS = get_secrets()
-S3_URL = '{0}/{1}'.format(SECRETS['S3_BUCKET'], SECRETS['TARGET'])
+S3_BUCKET = SECRETS['S3_BUCKET']
+TARGET = SECRETS['TARGET']
+S3_URL = 's3://{0}/{1}'.format(SECRETS['S3_BUCKET'], SECRETS['TARGET'])
