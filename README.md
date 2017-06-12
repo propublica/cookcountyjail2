@@ -26,6 +26,13 @@ More TK
 scrapy crawl inmates
 ```
 
+## Contributing
+
+1. Fork this repository.
+2. Create a [new issue](https://github.com/propublica/cookcountyjail2/issues/new) if none exists.
+3. Create a new branch named `XXXX-short-name` e.g. `0019-document-contributing`.
+4. Create a pull request back to the main repository.
+
 ## S3 filesystem structure
 
 ```
@@ -36,5 +43,4 @@ scrapy crawl inmates
   - /raw
     - <YYYY-MM-DD>-<BOOKING_ID>.html
 ```
-
 
