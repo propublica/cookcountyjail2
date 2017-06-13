@@ -9,6 +9,7 @@ def get_inmate(id):
 
 # @TODO is there a way to do this more elegantly with fixtures?
 testdata = (
+    # An old inmate: Especially important is to make sure hash is correct
     (get_inmate('2015-0904292'), {
             'age_at_booking': 21,
             'bail_amount': '50,000.00',
@@ -28,6 +29,7 @@ Criminal Courts Building
             'weight': '160',
 
     }),
+    # Just a random inmate
     (get_inmate('2017-0608010'), {
             'age_at_booking': 21,
             'bail_amount': '50,000.00',
@@ -42,7 +44,7 @@ Markham
             'gender': 'Male',
             'height': '507',
             'housing_location': 'DIV2-D1-D-32',
-            'inmate_hash': 'xxx',
+            'inmate_hash': 'af4da0bc3ecf5fe9568b902fbcec6588282c7c3b5377cfba94a44e3ce0ea3978',
             'race': 'BK',
             'weight': '165',
      }),
@@ -102,6 +104,7 @@ def test_charges(inmate, expected):
 @pytest.mark.parametrize("inmate,expected", testdata)
 def test_court_location(inmate, expected):
     assert inmate.court_location == expected['court_location']
+
 
 @pytest.mark.parametrize("inmate,expected", testdata)
 def test_inmate_hash(inmate, expected):

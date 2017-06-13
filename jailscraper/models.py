@@ -27,10 +27,10 @@ class InmatePage(object):
                 filtered.append(row)
         return '\n'.join(filtered)
 
-    def _makedate(self, x):
+    def _makedate(self, x, fmt='%Y-%m-%d'):
         """Turns mm/dd/YYYY into YYYY-mm-dd"""
         x = self._strip(x)
-        return datetime.strptime(x, '%m/%d/%Y').strftime('%Y-%m-%d')
+        return datetime.strptime(x, '%m/%d/%Y').strftime(fmt)
 
     @property
     def age_at_booking(self):
@@ -98,12 +98,13 @@ class InmatePage(object):
     def inmate_hash(self):
         """Return hash that should identify inmate approximately uniquely"""
         rawname = self.tree.xpath('//div[@id="mainContent"]/table[1]/tr[2]/td[2]//text()')
-        name = self._strip(rawname).replace(' ', '')
+        name = ''.join(rawname).replace(' ', '')
 
         birthdate_raw = self.tree.xpath('//div[@id="mainContent"]/table[1]/tr[2]/td[3]//text()')
-        birthdate = self._strip(birthdate_raw).replace('/', '')
+        birthdate = self._makedate(birthdate_raw, fmt='%m%d%Y')
 
-        id = '{0}{1}{2}{3}'.format(name, birthdate, self.race, self.gender).encode('utf-8')
+        id = '{0}{1}{2}{3}'.format(name, birthdate, self.race[0], self.gender).encode('utf-8')
+
         return hashlib.sha256(id).hexdigest()
 
     @property
