@@ -44,7 +44,7 @@ Markham
             'gender': 'Male',
             'height': '507',
             'housing_location': 'DIV2-D1-D-32',
-            'inmate_hash': 'xxx',
+            'inmate_hash': 'af4da0bc3ecf5fe9568b902fbcec6588282c7c3b5377cfba94a44e3ce0ea3978',
             'race': 'BK',
             'weight': '165',
      }),
