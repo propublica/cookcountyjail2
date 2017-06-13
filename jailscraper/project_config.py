@@ -14,7 +14,7 @@ logging.basicConfig()
 logger = logging.getLogger(PROJECT_SLUG)
 logger.setLevel(logging.INFO)
 
-logger.info('Loading {0} config').format(PROJECT_SLUG)
+logger.info('Loading {0} config'.format(PROJECT_SLUG))
 
 def get_secrets():
     """Get all environment variables associated with this project.
@@ -49,7 +49,8 @@ SECRETS = get_secrets()
 S3_BUCKET = SECRETS.get('S3_BUCKET')
 TARGET = SECRETS.get('TARGET')
 USE_S3_STORAGE = True
-USE_LOCAL_STORAGE = False
+USE_LOCAL_STORAGE = True
+FALLBACK_START_DATE = '2016-01-01'
 
 # Check for S3 access / @TODO factor into function and test
 if S3_BUCKET and USE_S3_STORAGE:
