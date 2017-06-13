@@ -8,7 +8,6 @@ import scrapy
 from datetime import date, datetime, timedelta
 from jailscraper import project_config
 from jailscraper.models import InmatePage
-from urllib.parse import urlparse, parse_qs
 
 # Quiet down, Boto!
 logging.getLogger('boto3').setLevel(logging.CRITICAL)
@@ -128,7 +127,7 @@ class InmatesSpider(scrapy.Spider):
         """Save scraped page to s3."""
         key = '{0}/raw/{1}'.format(project_config.TARGET, self._generate_page_filename(inmate))
         f = io.BytesIO(response.body)
-        upload = self._bucket.upload_fileobj(f, key)
+        self._bucket.upload_fileobj(f, key)
         self.log('Uploaded s3://{0}/{1}'.format(project_config.S3_BUCKET, key))
 
     def _generate_page_filename(self, inmate):
