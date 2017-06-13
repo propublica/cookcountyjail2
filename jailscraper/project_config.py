@@ -16,6 +16,7 @@ logger.setLevel(logging.INFO)
 
 logger.info('Loading {0} config'.format(PROJECT_SLUG))
 
+
 def get_secrets():
     """Get all environment variables associated with this project.
 

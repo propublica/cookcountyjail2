@@ -7,6 +7,7 @@ from lxml import html
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
+
 class InmatePage(object):
 
     def __init__(self, content):

@@ -2,4 +2,7 @@ language: python
 python:
   - "3.6"
 install: "pip install -r requirements.txt"
-script: pytest
+script:
+  - pyflakes .
+  - pep8 --ignore E501 .
+  - pytest
