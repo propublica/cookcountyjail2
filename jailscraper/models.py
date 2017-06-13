@@ -25,12 +25,15 @@ class InmatePage(object):
             row = row.strip()
             if not row.isspace():
                 filtered.append(row)
-        return '\n'.join(filtered)
+        return '\n'.join(filtered).strip()
 
     def _makedate(self, x, fmt='%Y-%m-%d'):
         """Turns mm/dd/YYYY into YYYY-mm-dd"""
         x = self._strip(x)
-        return datetime.strptime(x, '%m/%d/%Y').strftime(fmt)
+        try:
+            return datetime.strptime(x, '%m/%d/%Y').strftime(fmt)
+        except ValueError:
+            return x
 
     @property
     def age_at_booking(self):

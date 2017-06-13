@@ -48,6 +48,20 @@ Markham
             'race': 'BK',
             'weight': '165',
      }),
+    (get_inmate('2017-0612061'), {
+            'age_at_booking': 27,
+            'bail_amount': '*NO BOND*',
+            'booking_id': '2017-0612061',
+            'charges':  '',
+            'court_date': '',
+            'court_location': '',
+            'gender': 'Male',
+            'height': '510',
+            'housing_location': '',
+            'inmate_hash': 'ec407ab41d1d1fc319113516ce4f871a59a0b6f4c52a283507bf463d3fc55fdd',
+            'race': 'BK',
+            'weight': '185',
+     }),
 )
 
 
