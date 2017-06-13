@@ -6,5 +6,5 @@ install:
   - pip install pep8 pyflakes
 script:
   - pyflakes .
-  - pep8 --ignore E501 .
+  - pep8 --ignore E501,E266 .
   - pytest
