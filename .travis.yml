@@ -1,7 +1,9 @@
 language: python
 python:
   - "3.6"
-install: "pip install -r requirements.txt"
+install:
+  - pip install -r requirements.txt
+  - pip install pep8 pyflakes
 script:
   - pyflakes .
   - pep8 --ignore E501 .
