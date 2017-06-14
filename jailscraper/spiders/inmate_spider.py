@@ -138,4 +138,4 @@ class InmatesSpider(scrapy.Spider):
     def _is_complete_record(self, inmate):
         """Was this scrape run daily?"""
         booking_date = datetime.strptime(inmate.booking_date, '%Y-%m-%d')
-        return booking_date > self._start_date and booking_date < self._yesterday
+        return booking_date < self._yesterday
