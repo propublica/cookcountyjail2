@@ -39,21 +39,25 @@ ENVIRONMENT = get_env()
 # URL template for inmate lookup tool.
 INMATE_URL_TEMPLATE = 'http://www2.cookcountysheriff.org/search2/details.asp?jailnumber={0}'
 
-# Default maximum jail number to scan for a on a given day. This is a soft max (@TODO not implement).
-MAX_DEFAULT_JAIL_NUMBER = ENVIRONMENT.get('MAX_DEFAULT_JAIL_NUMBER', 400)
+# Default maximum jail number to scan for a on a given day. This is a soft max (@TODO not implemented).
+MAX_DEFAULT_JAIL_NUMBER = int(ENVIRONMENT.get('MAX_DEFAULT_JAIL_NUMBER', 400))
 
 # Environment name (e.g. 'dev', 'prod')
-TARGET = ENVIRONMENT.get('TARGET')
+TARGET = ENVIRONMENT.get('TARGET', 'dev')
 
 # Use S3 storage to mirror scraped pages. Must be set in env.sh. Default: false.
-USE_S3_STORAGE = bool(ENVIRONMENT.get('USE_S3_STORAGE'), False)
-if USE_S3_STORAGE:
-    S3_BUCKET = ENVIRONMENT.get('S3_BUCKET')
+USE_S3_STORAGE = bool(ENVIRONMENT.get('USE_S3_STORAGE', False))
+S3_BUCKET = ENVIRONMENT.get('S3_BUCKET')
 
 # Use local storage to mirror scraped pages. Default: true.
-USE_LOCAL_STORAGE = bool(ENVIRONMENT.get('USE_LOCAL_STORAGE'), True)
+USE_LOCAL_STORAGE = bool(ENVIRONMENT.get('USE_LOCAL_STORAGE', True))
 
-FALLBACK_START_DATE = ENVIRONMENT.get('FALLBACK_START_DATE', '2016-01-01')
+# Date to start without a seed file. The default only misses a few inmates but requires scanning for
+# more than 6 years of data.
+FALLBACK_START_DATE = ENVIRONMENT.get('FALLBACK_START_DATE', '2010-01-01')
+
+import pytest
+pytest.set_trace()
 
 # Check for S3 access / @TODO factor into function and test
 if S3_BUCKET and USE_S3_STORAGE:
