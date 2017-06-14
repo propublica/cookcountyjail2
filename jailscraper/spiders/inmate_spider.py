@@ -92,15 +92,20 @@ class InmatesSpider(scrapy.Spider):
         """Get seed file from S3. Return last date and array of lines."""
         prefix = '{0}/daily'.format(app_config.TARGET)
         keys = list(self._bucket.objects.filter(Prefix=prefix).all())
-        last_file = keys[-1].get()
+        last_key = keys[-1]
+        last_file = last_key.get()
         lines = last_file[u'Body'].read().split()
         last_date = keys[-1].key.split('/')[-1].split('.')[0]
-        self.log('Used {0} on S3 to seed scrape.'.format(last_file))
+        self.log('Used s3://{0}/{1} on S3 to seed scrape.'.format(last_key.bucket_name, last_key.key))
         return last_date, [line.decode('utf-8') for line in lines]
 
     def _get_local_seed_file(self):
         """Get seed file from local file system. Return array of lines."""
-        files = sorted(os.listdir('data/daily'))
+
+        try:
+            files = sorted(os.listdir('data/daily'))
+        except FileNotFoundError:
+            files = []
 
         if not len(files):
             self.log('No seed file found.')
