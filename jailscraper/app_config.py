@@ -56,9 +56,6 @@ USE_LOCAL_STORAGE = bool(ENVIRONMENT.get('USE_LOCAL_STORAGE', True))
 # more than 6 years of data.
 FALLBACK_START_DATE = ENVIRONMENT.get('FALLBACK_START_DATE', '2010-01-01')
 
-import pytest
-pytest.set_trace()
-
 # Check for S3 access / @TODO factor into function and test
 if S3_BUCKET and USE_S3_STORAGE:
     s3 = boto3.resource('s3')
