@@ -85,10 +85,8 @@ class InmatesSpider(scrapy.Spider):
         """Returns data from seed file as array of lines."""
         if app_config.USE_S3_STORAGE:
             return self._get_s3_seed_file()
-        if app_config.USE_LOCAL_STORAGE:
+        else:
             return self._get_local_seed_file()
-
-        return app_config.FALLBACK_START_DATE, []
 
     def _get_s3_seed_file(self):
         """Get seed file from S3. Return last date and array of lines."""
@@ -97,13 +95,12 @@ class InmatesSpider(scrapy.Spider):
         last_file = keys[-1].get()
         lines = last_file[u'Body'].read().split()
         last_date = keys[-1].key.split('/')[-1].split('.')[0]
-        # last_date = datetime.strptime(last_date, '%Y-%m-%d')
         self.log('Used {0} on S3 to seed scrape.'.format(last_file))
         return last_date, [line.decode('utf-8') for line in lines]
 
     def _get_local_seed_file(self):
         """Get seed file from local file system. Return array of lines."""
-        files = sorted(os.listdir('data/daily'), reverse=True)
+        files = sorted(os.listdir('data/daily'))
 
         if not len(files):
             self.log('No seed file found.')
