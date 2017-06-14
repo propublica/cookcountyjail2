@@ -6,7 +6,7 @@ import os
 import scrapy
 
 from datetime import date, datetime, timedelta
-from jailscraper import project_config
+from jailscraper import app_config
 from jailscraper.models import InmatePage
 
 # Quiet down, Boto!
@@ -22,9 +22,9 @@ class InmatesSpider(scrapy.Spider):
 
     def __init__(self, category=None, *args, **kwargs):
         super(InmatesSpider, self).__init__(*args, **kwargs)
-        if project_config.USE_S3_STORAGE:
+        if app_config.USE_S3_STORAGE:
             s3 = boto3.resource('s3')
-            self._bucket = s3.Bucket(project_config.S3_BUCKET)
+            self._bucket = s3.Bucket(app_config.S3_BUCKET)
         self._today = datetime.combine(date.today(), datetime.min.time())
         self._yesterday = self._today - ONE_DAY
 
@@ -35,10 +35,10 @@ class InmatesSpider(scrapy.Spider):
     def parse(self, response):
         inmate = InmatePage(response.body)
 
-        if project_config.USE_LOCAL_STORAGE:
+        if app_config.USE_LOCAL_STORAGE:
             self._save_local(response, inmate)
 
-        if project_config.USE_S3_STORAGE:
+        if app_config.USE_S3_STORAGE:
             self._save_to_s3(response, inmate)
 
         yield {
@@ -66,7 +66,7 @@ class InmatesSpider(scrapy.Spider):
         self._start_date = last_date
 
         reader = csv.DictReader(lines)
-        urls = [project_config.INMATE_URL_TEMPLATE.format(row['Booking_Id']) for row in reader]
+        urls = [app_config.INMATE_URL_TEMPLATE.format(row['Booking_Id']) for row in reader]
 
         # If there was seed data, increment day. Otherwise, just start on fallback date.
         if len(lines):
@@ -74,25 +74,25 @@ class InmatesSpider(scrapy.Spider):
 
         while last_date < self._today:
             next_query = last_date.strftime('%Y-%m%d')
-            for num in range(1, project_config.MAX_DEFAULT_JAIL_NUMBER + 1):
+            for num in range(1, app_config.MAX_DEFAULT_JAIL_NUMBER + 1):
                 jailnumber = '{0}{1:03d}'.format(next_query, num)
-                urls.append(project_config.INMATE_URL_TEMPLATE.format(jailnumber))
+                urls.append(app_config.INMATE_URL_TEMPLATE.format(jailnumber))
             last_date = last_date + ONE_DAY
 
         return urls
 
     def _get_seed_file(self):
         """Returns data from seed file as array of lines."""
-        if project_config.USE_S3_STORAGE:
+        if app_config.USE_S3_STORAGE:
             return self._get_s3_seed_file()
-        if project_config.USE_LOCAL_STORAGE:
+        if app_config.USE_LOCAL_STORAGE:
             return self._get_local_seed_file()
 
-        return project_config.FALLBACK_START_DATE, []
+        return app_config.FALLBACK_START_DATE, []
 
     def _get_s3_seed_file(self):
         """Get seed file from S3. Return last date and array of lines."""
-        prefix = '{0}/daily'.format(project_config.TARGET)
+        prefix = '{0}/daily'.format(app_config.TARGET)
         keys = list(self._bucket.objects.filter(Prefix=prefix).all())
         last_file = keys[-1].get()
         lines = last_file[u'Body'].read().split()
@@ -107,7 +107,7 @@ class InmatesSpider(scrapy.Spider):
 
         if not len(files):
             self.log('No seed file found.')
-            return project_config.FALLBACK_START_DATE, []
+            return app_config.FALLBACK_START_DATE, []
 
         last_file = os.path.join('data/daily', files[-1])
         last_date = files[-1].split('.')[0]
@@ -125,10 +125,10 @@ class InmatesSpider(scrapy.Spider):
 
     def _save_to_s3(self, response, inmate):
         """Save scraped page to s3."""
-        key = '{0}/raw/{1}'.format(project_config.TARGET, self._generate_page_filename(inmate))
+        key = '{0}/raw/{1}'.format(app_config.TARGET, self._generate_page_filename(inmate))
         f = io.BytesIO(response.body)
         self._bucket.upload_fileobj(f, key)
-        self.log('Uploaded s3://{0}/{1}'.format(project_config.S3_BUCKET, key))
+        self.log('Uploaded s3://{0}/{1}'.format(app_config.S3_BUCKET, key))
 
     def _generate_page_filename(self, inmate):
         """Make a scraped page filename."""

@@ -17,41 +17,44 @@ logger.setLevel(logging.INFO)
 logger.info('Loading {0} config'.format(PROJECT_SLUG))
 
 
-def get_secrets():
+def get_env():
     """Get all environment variables associated with this project.
 
     Reads environment variables that start with PROJECT_SLUG, strips out the slug
     and adds them to a dictionary.
     """
-    secrets = {}
+    env = {}
     for k, v in os.environ.items():
         if k.startswith(PROJECT_SLUG):
             new_k = k[len(PROJECT_SLUG) + 1:]
-            secrets[new_k] = v
+            env[new_k] = v
 
-    return secrets
+    return env
 
 
 ### Config
 
+ENVIRONMENT = get_env()
+
 # URL template for inmate lookup tool.
 INMATE_URL_TEMPLATE = 'http://www2.cookcountysheriff.org/search2/details.asp?jailnumber={0}'
 
-"""Sets the maximum jail number to scan for by default.
+# Default maximum jail number to scan for a on a given day. This is a soft max (@TODO not implemented).
+MAX_DEFAULT_JAIL_NUMBER = int(ENVIRONMENT.get('MAX_DEFAULT_JAIL_NUMBER', 400))
 
-If the subsequent jail number returns a 2xx status code, it will be incremented
-until an error code is sent. [@TODO: Not implemented, see
-https://github.com/propublica/cookcountyjail2/issues/9]
-"""
-MAX_DEFAULT_JAIL_NUMBER = 400
+# Environment name (e.g. 'dev', 'prod')
+TARGET = ENVIRONMENT.get('TARGET', 'dev')
 
-# Secrets
-SECRETS = get_secrets()
-S3_BUCKET = SECRETS.get('S3_BUCKET')
-TARGET = SECRETS.get('TARGET')
-USE_S3_STORAGE = True
-USE_LOCAL_STORAGE = True
-FALLBACK_START_DATE = '2016-01-01'
+# Use S3 storage to mirror scraped pages. Must be set in env.sh. Default: false.
+USE_S3_STORAGE = bool(ENVIRONMENT.get('USE_S3_STORAGE', False))
+S3_BUCKET = ENVIRONMENT.get('S3_BUCKET')
+
+# Use local storage to mirror scraped pages. Default: true.
+USE_LOCAL_STORAGE = bool(ENVIRONMENT.get('USE_LOCAL_STORAGE', True))
+
+# Date to start without a seed file. The default only misses a few inmates but requires scanning for
+# more than 6 years of data.
+FALLBACK_START_DATE = ENVIRONMENT.get('FALLBACK_START_DATE', '2010-01-01')
 
 # Check for S3 access / @TODO factor into function and test
 if S3_BUCKET and USE_S3_STORAGE:
@@ -61,5 +64,5 @@ if S3_BUCKET and USE_S3_STORAGE:
     except botocore.exceptions.ClientError:
         logger.warning('Amazon Web Services is unreachable. Scraped pages will not be stored on Amazon S3.')
         if not USE_LOCAL_STORAGE:
-            logger.warning('`USE_LOCAL_STORAGE` is disabled in `project_config.py` and S3 access is failing. Scraped pages will not be stored.')
+            logger.warning('`USE_LOCAL_STORAGE` is disabled in `app_config.py` and S3 access is failing. Scraped pages will not be stored.')
         USE_S3_STORAGE = False

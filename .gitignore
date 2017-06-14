@@ -1,7 +1,7 @@
 ### Project-specific excludes ###
 
 data/
-
+env.sh
 
 ### Standard Python stuff ###
 
