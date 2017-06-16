@@ -40,7 +40,7 @@ If local storage is enabled (as it is by default), every scraped page will be sa
 
 1. Fork this repository.
 2. Create a [new issue](https://github.com/propublica/cookcountyjail2/issues/new) if none exists.
-3. Create a new branch named `XXXX-short-name` e.g. `0019-document-contributing`, commit your changes to the branch, and push to your fork. (You can use `git push -u` to automatically create the new upstream branch).
+3. Create a new branch named `XXXX-short-name` e.g. `0019-document-contributing`, commit your changes to the branch, and push to your fork. (You can use `git push -u origin XXXX-short-name` to automatically create the new upstream branch).
 4. Create a pull request back to the main repository.
 
 ## Scraper filesystem structure
