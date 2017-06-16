@@ -4,6 +4,11 @@ Scrapes the Cook County Jail Inmate locator to create a database of inmate recor
 
 Descended in spirit from the Supreme Chi-Town Coding Crew scraper/API that ran from 2014-2016.
 
+## Requirements
+
+* Python 3.6+
+* (Optional) Amazon S3
+
 ## Installing
 
 Clone the repository, then install requirements:
