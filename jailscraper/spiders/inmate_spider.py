@@ -3,7 +3,9 @@ import csv
 import logging
 import io
 import os
+import shutil
 import scrapy
+import tempfile
 
 from datetime import date, datetime, timedelta
 from jailscraper import app_config
@@ -25,6 +27,8 @@ class InmatesSpider(scrapy.Spider):
         if app_config.USE_S3_STORAGE:
             s3 = boto3.resource('s3')
             self._bucket = s3.Bucket(app_config.S3_BUCKET)
+            self._tempdir = tempfile.mkdtemp()
+            self.log('Created temporary directory: {0}'.format(self._tempdir))
         self._today = datetime.combine(date.today(), datetime.min.time())
         self._yesterday = self._today - ONE_DAY
 
@@ -58,20 +62,26 @@ class InmatesSpider(scrapy.Spider):
             'Incomplete': self._is_complete_record(inmate)
         }
 
+    def closed(self, reason):
+        self.log('Removing {0}'.format(self._tempdir))
+        shutil.rmtree(self._tempdir)
+
     def _generate_urls(self):
         """Make URLs."""
-        last_date, lines = self._get_seed_file()
+        last_date, f = self._get_seed_file()
 
         last_date = datetime.strptime(last_date, '%Y-%m-%d')
         self._start_date = last_date
 
-        reader = csv.DictReader(lines)
+        reader = csv.DictReader(f)
         urls = [app_config.INMATE_URL_TEMPLATE.format(row['Booking_Id']) for row in reader]
 
-        # If there was seed data, increment day. Otherwise, just start on fallback date.
-        if len(lines):
+        # If there was seed data, increment day. Otherwise, just start on fallback date
+        # returned by self._get_seed_file().
+        if len(urls):
             last_date = last_date + ONE_DAY
 
+        # Scan the universe of URLs
         while last_date < self._today:
             next_query = last_date.strftime('%Y-%m%d')
             for num in range(1, app_config.MAX_DEFAULT_JAIL_NUMBER + 1):
@@ -93,11 +103,12 @@ class InmatesSpider(scrapy.Spider):
         prefix = '{0}/daily'.format(app_config.TARGET)
         keys = list(self._bucket.objects.filter(Prefix=prefix).all())
         last_key = keys[-1]
-        last_file = last_key.get()
-        lines = last_file[u'Body'].read().split()
         last_date = keys[-1].key.split('/')[-1].split('.')[0]
+        tempfilename = os.path.join(self._tempdir, '{0}.csv'.format(last_date))
+        self._bucket.download_file(last_key.key, tempfilename)
+        f = open(tempfilename)
         self.log('Used s3://{0}/{1} on S3 to seed scrape.'.format(last_key.bucket_name, last_key.key))
-        return last_date, [line.decode('utf-8') for line in lines]
+        return last_date, f
 
     def _get_local_seed_file(self):
         """Get seed file from local file system. Return array of lines."""
@@ -113,9 +124,9 @@ class InmatesSpider(scrapy.Spider):
 
         last_file = os.path.join('data/daily', files[-1])
         last_date = files[-1].split('.')[0]
-        with open(last_file) as f:
-            self.log('Used {0} from local file system to seed scrape.'.format(last_file))
-            return last_date, f.readlines()
+        f = open(last_file)
+        self.log('Used {0} from local file system to seed scrape.'.format(last_file))
+        return last_date, f
 
     def _save_local(self, response, inmate):
         """Save scraped page to local filesystem."""
