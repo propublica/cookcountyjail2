@@ -17,6 +17,13 @@ logger.setLevel(logging.INFO)
 logger.info('Loading {0} config'.format(PROJECT_SLUG))
 
 
+def str_bool(s):
+    s = s.lower()
+    if s == 'true' or s == '1':
+        return True
+    else:
+        return False
+
 def get_env():
     """Get all environment variables associated with this project.
 
@@ -46,11 +53,11 @@ MAX_DEFAULT_JAIL_NUMBER = int(ENVIRONMENT.get('MAX_DEFAULT_JAIL_NUMBER', 400))
 TARGET = ENVIRONMENT.get('TARGET', 'dev')
 
 # Use S3 storage to mirror scraped pages. Must be set in env.sh. Default: false.
-USE_S3_STORAGE = bool(ENVIRONMENT.get('USE_S3_STORAGE', False))
+USE_S3_STORAGE = str_bool(ENVIRONMENT.get('USE_S3_STORAGE', 'false'))
 S3_BUCKET = ENVIRONMENT.get('S3_BUCKET')
 
 # Use local storage to mirror scraped pages. Default: true.
-USE_LOCAL_STORAGE = bool(ENVIRONMENT.get('USE_LOCAL_STORAGE', True))
+USE_LOCAL_STORAGE = str_bool(ENVIRONMENT.get('USE_LOCAL_STORAGE', 'true'))
 
 # Date to start without a seed file. The default only misses a few inmates but requires scanning for
 # more than 6 years of data.
