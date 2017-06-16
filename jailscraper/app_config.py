@@ -18,11 +18,13 @@ logger.info('Loading {0} config'.format(PROJECT_SLUG))
 
 
 def str_bool(s):
+    """Turn a simple string into a boolean."""
     s = s.lower()
     if s == 'true' or s == '1':
         return True
     else:
         return False
+
 
 def get_env():
     """Get all environment variables associated with this project.
