@@ -61,6 +61,17 @@ This is likely to change somewhat.
     - <YYYY-MM-DD>-<BOOKING_ID>.html
 ```
 
+## Deployment
+
+You must have access to the private ProPublica repository. This is restricted to ProPublica employees only. Run:
+
+```
+git submodule update --init
+```
+
+Consult the documentation from the private repo.
+
+
 ## Roadmap
 
 When the scraper is running in production, we will release the daily snapshots.
