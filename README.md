@@ -75,3 +75,15 @@ Consult the documentation from the private repo.
 ## Roadmap
 
 When the scraper is running in production, we will release the daily snapshots.
+
+## Scripts
+
+To run scripts, set the `PYTHONPATH` from the top directory.
+
+```bash
+export PYTHONPATH=`pwd`:$PYTHONPATH
+```
+
+### `scripts/cleanup.py`
+
+Run this script to set the ACLs on daily snapshots to `public-read`.
