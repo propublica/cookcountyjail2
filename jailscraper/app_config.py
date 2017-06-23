@@ -12,9 +12,9 @@ PROJECT_SLUG = 'cookcountyjail2'
 
 logging.basicConfig()
 logger = logging.getLogger(PROJECT_SLUG)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
-logger.info('Loading {0} config'.format(PROJECT_SLUG))
+logger.debug('Loading {0} config'.format(PROJECT_SLUG))
 
 
 def str_bool(s):

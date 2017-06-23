@@ -8,4 +8,4 @@ ENV PYTHONPATH=/usr/src/app
 
 WORKDIR /usr/src/app
 
-CMD ["deploy/scrape.sh"]
+CMD ["./scrape.sh"]
