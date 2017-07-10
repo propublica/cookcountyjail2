@@ -29,6 +29,8 @@ class InmatesSpider(scrapy.Spider):
             self._bucket = s3.Bucket(app_config.S3_BUCKET)
             self._tempdir = tempfile.mkdtemp()
             self.log('Created temporary directory: {0}'.format(self._tempdir))
+        else:
+            self._tempdir = None
         self._today = datetime.combine(date.today(), datetime.min.time())
         self._yesterday = self._today - ONE_DAY
 
@@ -63,8 +65,9 @@ class InmatesSpider(scrapy.Spider):
         }
 
     def closed(self, reason):
-        self.log('Removing {0}'.format(self._tempdir))
-        shutil.rmtree(self._tempdir)
+        if self._tempdir:
+            self.log('Removing {0}'.format(self._tempdir))
+            shutil.rmtree(self._tempdir)
 
     def _generate_urls(self):
         """Make URLs."""
