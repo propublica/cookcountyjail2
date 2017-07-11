@@ -29,7 +29,7 @@ def cleanup():
                             if grant['Grantee'].get('URI') == PUBLIC_READ_URI and
                             grant['Permission'] == PUBLIC_READ_PERMISSION]
 
-        url = client.generate_presigned_url('get_object', Params= {'Bucket': app_config.S3_BUCKET, 'Key': key.key})
+        url = client.generate_presigned_url('get_object', Params={'Bucket': app_config.S3_BUCKET, 'Key': key.key})
         urls.append((url.split('?')[0],))
 
         if not len(publicread_perms):
@@ -45,7 +45,7 @@ def write_urls(urls):
     """
     Write URLs to manifest file on S3.
     """
-    urls = sorted(urls) # Sort in case Amazon order changes for some reason
+    urls = sorted(urls)  # Sort in case Amazon order changes for some reason
     f = StringIO()
     writer = csv.writer(f)
     writer.writerows(urls)
