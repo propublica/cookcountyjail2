@@ -61,21 +61,6 @@ This is likely to change somewhat.
     - <YYYY-MM-DD>-<BOOKING_ID>.html
 ```
 
-## Deployment
-
-You must have access to the private ProPublica repository. This is restricted to ProPublica employees only. Run:
-
-```
-git submodule update --init
-```
-
-Consult the documentation from the private repo.
-
-
-## Roadmap
-
-When the scraper is running in production, we will release the daily snapshots.
-
 ## Scripts
 
 To run scripts, set the `PYTHONPATH` from the top directory.
@@ -86,4 +71,4 @@ export PYTHONPATH=`pwd`:$PYTHONPATH
 
 ### `scripts/cleanup.py`
 
-Run this script to set the ACLs on daily snapshots to `public-read`.
+Run this script to set the ACLs on daily snapshots to `public-read` and to create a file manifest.
