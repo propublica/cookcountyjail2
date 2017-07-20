@@ -104,6 +104,8 @@ class InmatesSpider(scrapy.Spider):
     def _get_s3_seed_file(self):
         """Get seed file from S3. Return last date and array of lines."""
         prefix = '{0}/daily'.format(app_config.TARGET)
+        if prefix.startswith('/'):
+            prefix = prefix[1:]
         keys = list(self._bucket.objects.filter(Prefix=prefix).all())
         last_key = keys[-1]
         last_date = keys[-1].key.split('/')[-1].split('.')[0]
@@ -142,6 +144,8 @@ class InmatesSpider(scrapy.Spider):
     def _save_to_s3(self, response, inmate):
         """Save scraped page to s3."""
         key = '{0}/raw/{1}'.format(app_config.TARGET, self._generate_page_filename(inmate))
+        if key.startswith('/'):
+            key = key[1:]
         f = io.BytesIO(response.body)
         self._bucket.upload_fileobj(f, key)
         self.log('Uploaded s3://{0}/{1}'.format(app_config.S3_BUCKET, key))
