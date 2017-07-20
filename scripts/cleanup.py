@@ -51,6 +51,8 @@ def write_urls(urls):
     writer.writerows(urls)
     s3 = boto3.resource('s3')
     path = '{0}/manifest.csv'.format(app_config.TARGET)
+    if path.startswith('/'):
+        path = path[1:]
     key = s3.Object(app_config.S3_BUCKET, path)
     key.put(Body=f.getvalue())
     key.Acl().put(ACL='public-read')
