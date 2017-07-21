@@ -4,6 +4,8 @@ Scrapes the Cook County Jail Inmate locator to create a database of inmate recor
 
 Descended in spirit from the Supreme Chi-Town Coding Crew scraper/API that ran from 2014-2016.
 
+If you find this software useful, sign up for [ProPublica's newsletters](http://go.propublica.org/sign-up) and consider [donating to ProPublica Illinois](https://www.propublica.org/donate-illinois).
+
 ## Requirements
 
 * Python 3.6+
