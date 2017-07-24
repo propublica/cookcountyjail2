@@ -4,7 +4,6 @@ import logging
 import io
 import os
 import requests
-import shutil
 import scrapy
 
 from datetime import date, datetime, timedelta
