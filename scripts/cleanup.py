@@ -22,6 +22,8 @@ def cleanup():
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(app_config.S3_BUCKET)
     prefix = '{0}/daily'.format(app_config.TARGET)
+    if prefix.startswith('/'):
+        prefix = prefix[1:]
     keys = list(bucket.objects.filter(Prefix=prefix).all())
     for key in keys:
         acl = key.Acl()

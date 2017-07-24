@@ -3,9 +3,9 @@ import csv
 import logging
 import io
 import os
+import requests
 import shutil
 import scrapy
-import tempfile
 
 from datetime import date, datetime, timedelta
 from jailscraper import app_config
@@ -27,10 +27,6 @@ class InmatesSpider(scrapy.Spider):
         if app_config.USE_S3_STORAGE:
             s3 = boto3.resource('s3')
             self._bucket = s3.Bucket(app_config.S3_BUCKET)
-            self._tempdir = tempfile.mkdtemp()
-            self.log('Created temporary directory: {0}'.format(self._tempdir))
-        else:
-            self._tempdir = None
         self._today = datetime.combine(date.today(), datetime.min.time())
         self._yesterday = self._today - ONE_DAY
 
@@ -63,11 +59,6 @@ class InmatesSpider(scrapy.Spider):
             'Weight': inmate.weight,
             'Incomplete': self._is_complete_record(inmate)
         }
-
-    def closed(self, reason):
-        if self._tempdir:
-            self.log('Removing {0}'.format(self._tempdir))
-            shutil.rmtree(self._tempdir)
 
     def _generate_urls(self):
         """Make URLs."""
@@ -103,17 +94,19 @@ class InmatesSpider(scrapy.Spider):
 
     def _get_s3_seed_file(self):
         """Get seed file from S3. Return last date and array of lines."""
-        prefix = '{0}/daily'.format(app_config.TARGET)
-        if prefix.startswith('/'):
-            prefix = prefix[1:]
-        keys = list(self._bucket.objects.filter(Prefix=prefix).all())
-        last_key = keys[-1]
-        last_date = keys[-1].key.split('/')[-1].split('.')[0]
-        tempfilename = os.path.join(self._tempdir, '{0}.csv'.format(last_date))
-        self._bucket.download_file(last_key.key, tempfilename)
-        f = open(tempfilename)
-        self.log('Used s3://{0}/{1} on S3 to seed scrape.'.format(last_key.bucket_name, last_key.key))
-        return last_date, f
+
+        target = app_config.TARGET
+        if target:
+            target = '{0}/'.format(target)
+
+        url = "https://s3.amazonaws.com/{0}/{1}manifest.csv".format(app_config.S3_BUCKET, target)
+        resp = requests.get(url)
+
+        # For now, this "csv" is just a list of filenames, so we don't even need to parse as csv.
+        seed_url = resp.text.splitlines().pop()
+        last_date = seed_url.split('/')[-1].split('.')[0]
+        seed_response = requests.get(seed_url)
+        return last_date, io.StringIO(seed_response.text)
 
     def _get_local_seed_file(self):
         """Get seed file from local file system. Return array of lines."""
