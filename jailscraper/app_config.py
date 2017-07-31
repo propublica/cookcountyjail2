@@ -6,7 +6,7 @@ import os
 
 # Short name of project, for use in deployment and credential juggling.
 PROJECT_SLUG = 'cookcountyjail2'
-
+_PROJECT_SLUG_SKIP_INDEX = len(PROJECT_SLUG) + 1
 
 ### Helpers
 
@@ -20,25 +20,21 @@ logger.debug('Loading {0} config'.format(PROJECT_SLUG))
 def str_bool(s):
     """Turn a simple string into a boolean."""
     s = s.lower()
-    if s == 'true' or s == '1':
-        return True
-    else:
-        return False
+    return s == 'true' or s == '1'
 
 
 def get_env():
-    """Get all environment variables associated with this project.
+    """
+    Get all environment variables associated with this project.
 
     Reads environment variables that start with PROJECT_SLUG, strips out the slug
     and adds them to a dictionary.
     """
-    env = {}
-    for k, v in os.environ.items():
-        if k.startswith(PROJECT_SLUG):
-            new_k = k[len(PROJECT_SLUG) + 1:]
-            env[new_k] = v
-
-    return env
+    return dict(
+        (k[_PROJECT_SLUG_SKIP_INDEX:], v)
+        for k, v in os.environ.items()
+        if k.startswith(PROJECT_SLUG)
+    )
 
 
 ### Config
