@@ -7,7 +7,7 @@ import requests
 import scrapy
 
 from datetime import date, datetime, timedelta
-from jailscraper import app_config
+from jailscraper import app_config, utils
 from jailscraper.models import InmatePage
 
 # Quiet down, Boto!
@@ -61,18 +61,14 @@ class InmatesSpider(scrapy.Spider):
 
     def _generate_urls(self):
         """Make URLs."""
-        last_date, f = self._get_seed_file()
+        f = self._get_seed_file()
+        data = list(csv.DictReader(f))
 
-        last_date = datetime.strptime(last_date, '%Y-%m-%d')
+        urls = [app_config.INMATE_URL_TEMPLATE.format(row['Booking_Id']) for row in data]
+        dates = [datetime.strptime(row['Booking_Date'], '%Y-%m-%d') for row in data]
+
+        last_date = max(dates) + ONE_DAY
         self._start_date = last_date
-
-        reader = csv.DictReader(f)
-        urls = [app_config.INMATE_URL_TEMPLATE.format(row['Booking_Id']) for row in reader]
-
-        # If there was seed data, increment day. Otherwise, just start on fallback date
-        # returned by self._get_seed_file().
-        if len(urls):
-            last_date = last_date + ONE_DAY
 
         # Scan the universe of URLs
         while last_date < self._today:
@@ -92,23 +88,14 @@ class InmatesSpider(scrapy.Spider):
             return self._get_local_seed_file()
 
     def _get_s3_seed_file(self):
-        """Get seed file from S3. Return last date and array of lines."""
-
-        target = app_config.TARGET
-        if target:
-            target = '{0}/'.format(target)
-
-        url = "https://s3.amazonaws.com/{0}/{1}manifest.csv".format(app_config.S3_BUCKET, target)
-        resp = requests.get(url)
-
-        # For now, this "csv" is just a list of filenames, so we don't even need to parse as csv.
-        seed_url = resp.text.splitlines().pop()
-        last_date = seed_url.split('/')[-1].split('.')[0]
+        """Get seed file from S3. Return file-like object."""
+        urls = utils.get_manifest()
+        seed_url = urls.pop()
         seed_response = requests.get(seed_url)
-        return last_date, io.StringIO(seed_response.text)
+        return io.StringIO(seed_response.text)
 
     def _get_local_seed_file(self):
-        """Get seed file from local file system. Return array of lines."""
+        """Get seed file from local file system. Return file-like object."""
 
         try:
             files = sorted(os.listdir('data/daily'))
@@ -120,10 +107,9 @@ class InmatesSpider(scrapy.Spider):
             return app_config.FALLBACK_START_DATE, []
 
         last_file = os.path.join('data/daily', files[-1])
-        last_date = files[-1].split('.')[0]
         f = open(last_file)
         self.log('Used {0} from local file system to seed scrape.'.format(last_file))
-        return last_date, f
+        return f
 
     def _save_local(self, response, inmate):
         """Save scraped page to local filesystem."""
