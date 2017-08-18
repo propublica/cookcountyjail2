@@ -107,7 +107,6 @@ class InmatesSpider(scrapy.Spider):
             return app_config.FALLBACK_START_DATE, []
 
         last_file = os.path.join('data/daily', files[-1])
-        last_date = files[-1].split('.')[0]
         f = open(last_file)
         self.log('Used {0} from local file system to seed scrape.'.format(last_file))
         return f

@@ -1,4 +1,3 @@
-import csv
 import requests
 
 from jailscraper import app_config
