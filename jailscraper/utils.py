@@ -8,7 +8,7 @@ S3_ROOT = 'https://s3.amazonaws.com'
 def get_s3_url(path):
     target = app_config.TARGET
     if target:
-        '{0}/'.format(target)
+        target = '{0}/'.format(target)
     return "{0}/{1}/{2}{3}".format(S3_ROOT, app_config.S3_BUCKET, target, path)
 
 
