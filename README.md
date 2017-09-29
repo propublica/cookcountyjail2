@@ -66,8 +66,7 @@ If local storage is enabled (as it is by default), every scraped page will be sa
 * `age_at_booking`: Age in years calculated from birthdate and booking date.
 * `bail_amount`: Bond amount at time of scrape.
 * `booking_id`: Unique ID for an inmate's stay in the jail.
-* `charges`: Charges associated with this inmate. This is typically the "lead" charge, but is less reliable than other fields in this dataset. Inmates may have many charges and the most serious charge is not guaranteed to be input into the Sheriff's system.
-* `charges`: ILCS charges.
+* `charges`: ILCS charges associated with this inmate. This is typically the "lead" charge, but is less reliable than other fields in this dataset. Inmates may have many charges and the most serious charge is not guaranteed to be input into the Sheriff's system.
 * `court_date`: Next court date as of scrape date.
 * `court_location`: Next court location as of scrape date.
 * `gender`: Gender ('male', 'female', 'transgender').
