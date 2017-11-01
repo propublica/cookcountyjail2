@@ -64,7 +64,7 @@ class InmatesSpider(scrapy.Spider):
         f = self._get_seed_file()
         data = list(csv.DictReader(f))
 
-        urls = [app_config.INMATE_URL_TEMPLATE.format(row['Booking_Id']) for row in data]
+        urls = _generate_seeded_urls(data)
         dates = [datetime.strptime(row['Booking_Date'], '%Y-%m-%d') for row in data]
 
         last_date = max(dates) + ONE_DAY
@@ -110,6 +110,10 @@ class InmatesSpider(scrapy.Spider):
         f = open(last_file)
         self.log('Used {0} from local file system to seed scrape.'.format(last_file))
         return f
+
+    def _generate_seeded_urls(self, data):
+        """Use seeded data to generate known URLs."""
+        return [app_config.INMATE_URL_TEMPLATE.format(row['Booking_Id']) for row in data]
 
     def _save_local(self, response, inmate):
         """Save scraped page to local filesystem."""
