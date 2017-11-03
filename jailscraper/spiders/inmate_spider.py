@@ -64,7 +64,7 @@ class InmatesSpider(scrapy.Spider):
         f = self._get_seed_file()
         data = list(csv.DictReader(f))
 
-        urls = _generate_seeded_urls(data)
+        urls = self._generate_seeded_urls(data)
         dates = [datetime.strptime(row['Booking_Date'], '%Y-%m-%d') for row in data]
 
         last_date = max(dates) + ONE_DAY
