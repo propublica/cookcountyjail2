@@ -1,6 +1,7 @@
 import pytest
 
 from jailscraper.models import InmatePage
+from tests import TEST_INMATES
 
 
 def get_inmate(id):
@@ -8,61 +9,16 @@ def get_inmate(id):
         body = f.read()
     return InmatePage(body)
 
-# @TODO is there a way to do this more elegantly with fixtures?
-testdata = (
-    # An old inmate: Especially important is to make sure hash is correct
-    (get_inmate('2015-0904292'), {
-        'age_at_booking': 21,
-        'bail_amount': '50,000.00',
-        'booking_id': '2015-0904292',
-        'charges': """720 ILCS 5/11-9(a)(2)
-PUBLIC INDECENCY/LEWD EXPOSURE""",
-        'court_date': '2017-07-20',
-        'court_location': """Criminal Courts Building
-Criminal Courts Building
 
-,""",
-        'gender': 'Male',
-        'height': '509',
-        'housing_location': 'DIV9-3B-3105-1',
-        'inmate_hash': '7b7d440062f7cf7b3bc15a6c0fd543f4d84fd2e74d05969401085ce5c8d3e03b',
-        'race': 'BK',
-        'weight': '160',
-    }),
-    # Just a random inmate
-    (get_inmate('2017-0608010'), {
-        'age_at_booking': 21,
-        'bail_amount': '50,000.00',
-        'booking_id': '2017-0608010',
-        'charges': """720 ILCS 5/24-1.6(a)(3)(a)(5)
-AGG UUW/LOADED PISTOL, REVOLVER, HANDGUN-NO CCL""",
-        'court_date': '2017-06-28',
-        'court_location': """Markham
-Markham
-
-,""",
-        'gender': 'Male',
-        'height': '507',
-        'housing_location': 'DIV2-D1-D-32',
-        'inmate_hash': 'af4da0bc3ecf5fe9568b902fbcec6588282c7c3b5377cfba94a44e3ce0ea3978',
-        'race': 'BK',
-        'weight': '165',
-    }),
-    (get_inmate('2017-0612061'), {
-        'age_at_booking': 27,
-        'bail_amount': '*NO BOND*',
-        'booking_id': '2017-0612061',
-        'charges': '',
-        'court_date': '',
-        'court_location': '',
-        'gender': 'Male',
-        'height': '510',
-        'housing_location': '',
-        'inmate_hash': 'ec407ab41d1d1fc319113516ce4f871a59a0b6f4c52a283507bf463d3fc55fdd',
-        'race': 'BK',
-        'weight': '185',
-    }),
+expected = (
+    get_inmate('2015-0904292'),
+    get_inmate('2017-0608010'),
+    get_inmate('2017-0612061'),
 )
+
+
+# @TODO is there a way to do this more elegantly with fixtures?
+testdata = list(zip(expected, TEST_INMATES))
 
 
 @pytest.mark.parametrize("inmate,expected", testdata)
