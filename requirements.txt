@@ -72,7 +72,7 @@ traitlets==4.3.2
 Twisted==17.1.0
 tzlocal==1.4
 Unidecode==0.4.20
-urllib3==1.21.1
+urllib3==1.26.5
 w3lib==1.17.0
 wcwidth==0.1.7
 xlrd==1.0.0
