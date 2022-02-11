@@ -69,7 +69,7 @@ six==1.10.0
 smart-open==1.5.3
 SQLAlchemy==1.1.10
 traitlets==4.3.2
-Twisted==17.1.0
+Twisted==22.1.0
 tzlocal==1.4
 Unidecode==0.4.20
 urllib3==1.21.1
