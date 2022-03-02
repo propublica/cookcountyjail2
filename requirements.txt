@@ -62,7 +62,7 @@ regex==2017.6.7
 requests==2.17.3
 ruamel.yaml==0.15.5
 s3transfer==0.1.10
-Scrapy==1.4.0
+Scrapy==1.8.2
 service-identity==17.0.0
 simplegeneric==0.8.1
 six==1.10.0
