@@ -35,7 +35,7 @@ jdcal==1.3
 jedi==0.10.2
 jmespath==0.9.3
 leather==0.3.3
-lxml==3.8.0
+lxml==4.9.1
 openpyxl==2.4.8
 parsedatetime==2.4
 parsel==1.2.0
